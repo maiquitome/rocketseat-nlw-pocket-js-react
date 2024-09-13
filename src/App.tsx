@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react'
-
 import { Dialog } from './components/ui/dialog'
 import { CreateGoal } from './components/create-goal'
 import { EmptyGoals } from './components/empty-goals'
 import { Summary } from './components/summary'
+import { useQuery } from '@tanstack/react-query'
 
 type SummaryResponse = {
   completed: number
@@ -19,21 +18,19 @@ type SummaryResponse = {
 }
 
 export function App() {
-  const [summary, setSummary] = useState<SummaryResponse | null>(null)
+  const { data } = useQuery<SummaryResponse>({
+    queryKey: ['summary'],
+    queryFn: async () => {
+      const response = await fetch('http://localhost:3333/summary')
+      const data = await response.json()
 
-  useEffect(() => {
-    fetch('http://localhost:3333/summary')
-      .then(response => {
-        return response.json()
-      })
-      .then(data => {
-        setSummary(data.summary)
-      })
-  }, [])
+      return data.summary
+    },
+  })
 
   return (
     <Dialog>
-      {summary?.total && summary.total > 20 ? <Summary /> : <EmptyGoals />}
+      {data?.total && data.total > 0 ? <Summary /> : <EmptyGoals />}
 
       <CreateGoal />
     </Dialog>
