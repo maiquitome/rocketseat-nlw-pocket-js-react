@@ -88,50 +88,41 @@ export function Summary() {
       <div className="flex flex-col gap-6">
         <h2 className="text-xl font-medium">Sua semana</h2>
 
-        <div className="flex flex-col gap-4">
-          <h3 className="font-medium">
-            Domingo{' '}
-            <span className="text-zinc-400 text-xs">(10 de Agosto)</span>
-          </h3>
+        {Object.entries(data.goalsPerDay).map(([date, goals]) => {
+          const weekDay = dayjs(date).format('dddd')
+          // const formattedDate = dayjs(date).format('D[ de ]MMMM')
+          const formattedDay = dayjs(date).format('D[ de ]')
+          const formattedMonth = dayjs(date).format('MMMM')
 
-          <ul className="flex flex-col gap-3">
-            <li className="flex items-center gap-2">
-              <CheckCircle2 className="size-4 text-pink-500" />
-              <span className="text-sm text-zinc-400">
-                Você completou "
-                <span className="text-zinc-100">Acordar cedo</span>" às{' '}
-                <span className="text-zinc-100">08:13h</span>
-              </span>
-            </li>
+          return (
+            <div key={date} className="flex flex-col gap-4">
+              <h3 className="font-medium">
+                <span className="capitalize">{weekDay} </span>
+                <span className="text-zinc-400 text-xs ">
+                  (<span>{formattedDay}</span>
+                  <span className="capitalize">{formattedMonth}</span>)
+                </span>
+              </h3>
 
-            <li className="flex items-center gap-2">
-              <CheckCircle2 className="size-4 text-pink-500" />
-              <span className="text-sm text-zinc-400">
-                Você completou "
-                <span className="text-zinc-100">Acordar cedo</span>" às{' '}
-                <span className="text-zinc-100">08:13h</span>
-              </span>
-            </li>
-          </ul>
-        </div>
+              <ul className="flex flex-col gap-3">
+                {goals.map(goal => {
+                  const time = dayjs(goal.completedAt).format('HH:mm')
 
-        <div className="flex flex-col gap-4">
-          <h3 className="font-medium">
-            Segunda-feira{' '}
-            <span className="text-zinc-400 text-xs">(11 de Agosto)</span>
-          </h3>
-
-          <ul className="flex flex-col gap-3">
-            <li className="flex items-center gap-2">
-              <CheckCircle2 className="size-4 text-pink-500" />
-              <span className="text-sm text-zinc-400">
-                Você completou "
-                <span className="text-zinc-100">Acordar cedo</span>" às{' '}
-                <span className="text-zinc-100">08:13h</span>
-              </span>
-            </li>
-          </ul>
-        </div>
+                  return (
+                    <li key={goal.id} className="flex items-center gap-2">
+                      <CheckCircle2 className="size-4 text-pink-500" />
+                      <span className="text-sm text-zinc-400">
+                        Você completou "
+                        <span className="text-zinc-100">{goal.title}</span>" às{' '}
+                        <span className="text-zinc-100">{time}h</span>
+                      </span>
+                    </li>
+                  )
+                })}
+              </ul>
+            </div>
+          )
+        })}
       </div>
     </div>
   )
